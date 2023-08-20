@@ -1,0 +1,20 @@
+- hosts: jenkins
+  remote_user: ec2-user
+  become: yes
+  tasks:
+  - name: Add repository jenkins
+    ansible.builtin.yum_repository:
+      name: jenkins repository
+      baseurl: http://pkg.jenkins.io/redhat
+      gpgkey: https://pkg.jenkins.io/redha/jenkins.io-2023.key
+  - name: Install the latest version of tools
+    yum:
+      name: "{{ item }}"
+      state: present
+    loop:
+      - java
+      - jenkins
+  - name: start the service of jenkins
+    service:
+      name: jenkins
+      state: started
